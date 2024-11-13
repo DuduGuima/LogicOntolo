@@ -1,0 +1,165 @@
+\documentclass[12pt]{article}
+\usepackage[french]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage[ruled,vlined]{algorithm2e}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{csquotes}
+\usepackage[T1]{fontenc} 
+\usepackage{listings}
+\lstset { %
+    language=C++, % set backgroundcolor
+    basicstyle=\footnotesize,% basic font setting
+}
+\newcommand{\mycode}{                               % Name after the Language used
+    \lstset{
+        basicstyle=\ttfamily\small,                 % Code Font Size
+        keywordstyle=\color{darkpurple}\bfseries,   % Color Key Word
+        stringstyle=\color{darkblue},               % Color String
+        identifierstyle=\color{teal},
+        commentstyle=\color{darkgreen},             % Color Comment
+        morecomment=[s][\color{blue}]{/**}{*/},     % Color Comment
+        tabsize=2,                                  % Tab Size
+        captionpos=b,                               % Caption Position
+        showtabs=false,                             % Show Tabs within Strings
+        showspaces=false,                           % Show Spaces Code
+        showstringspaces=false,                     % Show Spaces Strings
+        stepnumber=1,                               % Line Number Step
+        numbers=left,                               % Line Number Position
+        numbersep=5pt,                              % Line Number Distance from Code
+        numberstyle=\tiny\color{gray},              % Line Number Style
+        frame=single,                               % Frame
+        rulecolor=\color{black},                    % Frame Color
+        xleftmargin=10pt,                            % Left Margin
+        backgroundcolor=\color{white},              % Background Color
+        breaklines=true,                            % Break Automatic Line
+        breakatwhitespace=true,                     % Break Automatic Spaces 
+        breakautoindent=false,                      % Break Automatic Indent
+        extendedchars=true,                         % 
+        inputencoding=latin1,                       % Encoding
+        literate=                                   % Including Especial Charects
+                {é}{{\'{e}}}1
+                {è}{{\`{e}}}1
+                {ê}{{\^{e}}}1
+                {ë}{{\¨{e}}}1
+                {É}{{\'{E}}}1
+                {Ê}{{\^{E}}}1
+                {û}{{\^{u}}}1
+                {ù}{{\`{u}}}1
+                {ú}{{\'{u}}}1
+                {â}{{\^{a}}}1
+                {à}{{\`{a}}}1
+                {á}{{\'{a}}}1
+                {ã}{{\~{a}}}1
+                {ä}{{\"{a}}}1
+                {Á}{{\'{A}}}1
+                {Â}{{\^{A}}}1
+                {Ã}{{\~{A}}}1
+                {Ä}{{\"{A}}}1
+                {ç}{{\c{c}}}1
+                {Ç}{{\c{C}}}1
+                {õ}{{\~{o}}}1
+                {ó}{{\'{o}}}1
+                {ô}{{\^{o}}}1
+                {ö}{{\"{o}}}1
+                {Õ}{{\~{O}}}1
+                {Ó}{{\'{O}}}1
+                {Ô}{{\^{O}}}1
+                {Ö}{{\"{O}}}1
+                {î}{{\^{i}}}1
+                {Î}{{\^{I}}}1
+                {í}{{\'{i}}}1
+                {Í}{{\~{Í}}}1
+                {ü}{{\"{u}}}1
+                {Ü}{{\"{U}}}1
+    }
+}
+
+
+
+\usepackage{geometry}
+ \geometry{
+ a4paper,
+ total={170mm,257mm},
+ left=20mm,
+ top=20mm,
+ }
+\usepackage{float}
+\usepackage{graphicx}
+\graphicspath{ {./images/} }
+\usepackage{wrapfig}
+
+\usepackage{graphicx}
+\usepackage{color}
+
+\sloppy
+\definecolor{lightgray}{gray}{0.5}
+% \setlength{\parindent}{0pt}
+
+\usepackage{caption}
+\usepackage{subcaption}
+
+\usepackage{hyperref}
+
+\usepackage[backend=biber, sorting=ynt]{biblatex}
+\addbibresource{refs.bib}
+
+
+
+
+
+
+
+
+\begin{document}
+% \setlength{\parindent}{0pt}
+
+\begin{titlepage}
+ \centering
+ \vspace*{1in}
+ \begin{figure}[t]
+    \centering
+    \includegraphics[scale=0.5]{images/Logo_ENSTA_Paris.jpg}
+\end{figure}
+ \begin{Huge}\bfseries
+ IA301 - Logics and Symbolic AI
+  
+  TP\par
+ \end{Huge}
+ \vspace{1.5in}
+ \begin{large}\bfseries
+
+  
+Joaquim Minarelli Gaspar\\
+Filipe Lacerda\\
+Eduardo Guimarães\\
+Yaël
+
+ \end{large}
+ \vfill
+	 
+ 
+ \vspace{0.5in}
+ Palaiseau, France
+ \par
+ 
+ \vspace{0.5in}
+ Novembre 2024
+ \par
+\end{titlepage}
+
+\tableofcontents
+
+\newpage
+
+\section{OWL with Protege}
+\subsection{Simple Ontology (Preliminary Case)}
+\input{OWLProtege/1stcase.tex}
+
+\subsection{Ontology of Ecosystem Interactions and Resource Consumption}
+\input{OWLProtege/Ecosystem.tex}
+
+\subsection{Protege implementation}
+\input{OWLProtege/implementation.tex}
+
+\end{document}

@@ -1,0 +1,65 @@
+The following describes the classes and subclasses used to create the ontology in Protege.
+\\
+
+\begin{itemize}
+    \item \textbf{Classes} (that are subclasses of owl:Thing):
+    \begin{itemize}
+        \item Organism;
+
+        \item Environment;
+
+        \item resource.
+    \end{itemize}
+
+    \item \textbf{Subclasses}:
+    \begin{itemize}
+        \item Animal, Plant and Microorganism as subclasses of Organim (all mutually disjoint from each other);
+
+        \item Herbivore and Carnivore as subclasses of Animals (they are both disjoint);
+
+        \item Bryophytes, Pteridophytes, Gymnosperms, Angiosperms as subclasses of Plants (all mutually disjoint from each other).
+        \\
+    \end{itemize} 
+\end{itemize}
+
+
+Regarding the Class properties, we have the following data and object properties:
+\\
+
+\begin{itemize}
+    \item \textbf{Data properties:}
+    \begin{itemize}
+        \item weight with domain Animal and range xsd:decimal;
+
+        \item produceFruit with domain Plant and range xsd.bool. This propertie can be inferred in two ways: it will be true if this plant is eaten by an animal or if it's an angiosperm.
+    \end{itemize}
+
+    \item \textbf{Object properties:}
+    \begin{itemize}
+        \item eat with domain Animal and range Organism;
+
+        \item livesAt with domain Organism and range Environment;
+
+        \item consumeTheresource with domain Organism and range resource;
+
+        \item isEatenBy with domain Organism and range Animal (is the inverse property eat);
+
+        \item isOccupiedBy with domain Environment and range Organism (is the inverse of livesAt);
+
+        \item hasTheResource with domain Environment and range resource;
+
+        \item isAvailableIn with domain Resource and range Environment (is the inverse property hasTheResource);
+
+        \item canBeFoundOnTheGround with domain Resource and range Environment (meaning if a certain resource can or not be found on the ground, or if it is a gas);
+
+        \item coExistWith with domain Organism and range Organism. This property is symmetric. In addition, this property is different if both organisms are animals/plants or if they are both microorganisms:
+        \begin{enumerate}
+            \item $A$ and $B$ are animals/plants: \textit{A} coexists with \textit{B} means that \textit{A} and \textit{B} lives at the same environment (livesAt(A) == livesAt(B)) \textbf{and} they do not share neither the relation \textit{A} isEatenBy \textit{B} nor \textit{B} isEatenBy \textit{A};
+
+            \item $A$ and $B$ are both microorganisms: \textit{A} coexists with \textit{B} means that \textit{A} and \textit{B} lives at the same environment (livesAt(A) == livesAt(B)) \textbf{and} they do not consume the same resource through the relation consumeTheResource;
+
+            \item $A$ is an animal or a plant and $B$ is a microorganism: they will always coexist if the live in the same environment through the relation livesAt.
+        \end{enumerate}
+        
+    \end{itemize}
+\end{itemize}
