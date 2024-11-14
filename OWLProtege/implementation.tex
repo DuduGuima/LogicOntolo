@@ -1,4 +1,5 @@
 
+
 The following describes the classes and subclasses used to create the ontology in Protege.
 \\
 
@@ -17,7 +18,7 @@ The following describes the classes and subclasses used to create the ontology i
     \begin{itemize}
         \item Animal, Plant and Microorganism as subclasses of Organism (all mutually disjoint from each other);
 
-        \item Herbivore and Carnivore as subclasses of Animals (they are both disjoint);
+        \item Herbivore, Carnivore and Omnivorous as subclasses of Animals, where Omnivorous is defined as Herbivore $\cap$ Carnivore;
 
         \item Bryophytes and  Angiosperms as subclasses of Plants (all mutually disjoint from each other).
         \\
@@ -30,7 +31,7 @@ It is important to note that all classes and subclasses are mutually exclusive; 
     \centering
     \includegraphics[width=0.35\linewidth]{images/ontology/classes.jpg}
     \caption{Class hierarchy}
-    \label{fig:diagram}
+    \label{fig:class}
 \end{figure}
 
 
@@ -40,13 +41,11 @@ Regarding the Class properties, we have the following \textbf{Data properties}:
     \begin{itemize}
         \item \textit{weight} with domain Animal and range xsd:decimal;
 
-        \item \textit{has\_Fruits} with domain Angiosperms and range xsd:boolean;
+        \item \textit{has\_Fruits} with domain Plant and range xsd:boolean. In addition, this property is set to be True for Angiosperms and False for Briophites;
 
-        \item \textit{chemical\_formula} with domain Ressource and range xsd:string. We set this property to be unique, as it will be used as the identifier of the ressource;
+        \item \textit{chemical\_formula} with domain Ressource and range xsd:string;
 
-        \item \textit{geographical\_coordinates} with domain Habitat and range xsd:string. It also has the unique property, and will be used as the identifier of the environment;
-
-        \item \textit{scientific\_name} with domain Organism and range xsd:string. Again, it's unique and used as an indentifier for the organisms.
+        \item \textit{scientific\_name} with domain Organism and range xsd:string.
         \\
 
     \end{itemize}
@@ -76,37 +75,49 @@ Finally, we have the following \textbf{Object properties}:
 \\
 
     \begin{itemize}
-        \item \textit{eat} with domain Animal and range Animal $\cup$ Plant;
+        \item \textit{eat} with domain Animal and range Organism. This property is also irreflexive;
 
-        \item \textit{livesIn} with domain Organism and range Habitat;
+        \item \textit{foundInHabitat} with domain Organism and range Habitat;
 
         \item \textit{consumeTheResource} with domain Organism and range Resource;
 
         \item \textit{isEatenBy} with domain Organism and range Animal (is the inverse property \textit{eat});
 
-        \item \textit{isOccupiedBy} with domain Habitat and range Organism (is the inverse of \textit{livesAt});
+        \item \textit{isNotEatenBy} with domain Animal $\cup$ Plant and range Animal. It's disjoint with \textit{isEatenBy};
+
+        \item \textit{isOccupiedBy} with domain Habitat and range Organism (is the inverse of \textit{foundInHabitat});
 
         \item \textit{hasTheResource} with domain Habitat and range Resource;
 
-        \item \textit{isInTheEnvironment} with domain Resource and range Habitat (inverse of the property \textit{hasTheResource})
+        \item textit{isConsumedBy} with domain Resource and range Organism (is the inverse of \textit{consumeTheResource});
+
+        \item \textit{isInTheHabitat} with domain Resource and range Habitat (inverse of the property \textit{hasTheResource})
 
         \item \textit{coExistWith} with domain Organism and range Organism. This property is symmetric. In addition, this property is different if both organisms are animals/plants or if they are both microorganisms:
         \begin{enumerate}
-            \item $A$ and $B$ are animals/plants: \textit{A} coexists with \textit{B} means that \textit{A} and \textit{B} lives at the same environment (livesIn(A) == livesIn(B)) \textbf{and} they do not share neither the relation \textit{A} isEatenBy \textit{B} nor \textit{B} isEatenBy \textit{A};
+            \item $A$ and $B$ are herbivores/plants: \textit{A} coexists with \textit{B} means that \textit{A} and \textit{B} lives at the same environment (foundInHabitat(A) == foundInHabitat(B));
 
-            \item $A$ and $B$ are both microorganisms: \textit{A} coexists with \textit{B} means that \textit{A} and \textit{B} lives at the same environment (livesIn(A) == livesIn(B)) \textbf{and} they do not consume the same resource through the relation consumeTheResource;
+            \item $A$ and $B$ are both microorganisms: \textit{A} coexists with \textit{B} means that \textit{A} and \textit{B} lives at the same environment (foundInHabitat(A) == foundInHabitat(B)) \textbf{and} they do not consume the same resource through the relation consumeTheResource;
+
+            \item $A$ and $B$ are carnivores: \textit{A} coexists with \textit{B} means that \textit{A} and \textit{B} lives at the same environment (foundInHabitat(A) == foundInHabitat(B)) \textbf{and} they do not share neither the relation \textit{A isNotEatenBy B} and \textit{B isNotEatenBy A};
             \\
             
         \end{enumerate}
     \end{itemize}
 
-The list of object properties in Protégé can be seen in the figure below.
+Finally, if two Organisms coexists, it means that they should be both at the same Habitat:
+
+$$foundInTheHabitat(A, Hab)
+\land coExistWith(A, B) \rightarrow
+foundInTheHabitat(B, Hab)$$
+
+The list of object properties in Protege can be seen in the figure below.
 
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.35\linewidth]{images/ontology/obg_protp.jpg}
     \caption{Object properties}
-    \label{fig:diagram}
+    \label{fig:obj}
 \end{figure}
 
 The inference rules were described using \textit{SWRL} (Semantic Web Rule Language), which allows for writing it in a practical and concise manner. Below, we provide a detailed description of all the inference rules related to object and data properties.
@@ -116,7 +127,18 @@ We start by the following inference rule: if Organism $a$ eat Organism $b$, and 
 \\
 
 \begin{lstlisting}
-eat(?a, ?b) ^ liveIn(?a, ?env) -> liveIn(?b, ?env)
+eat(?a, ?b) ^ foundInHabitat(?a, ?env) -> foundInHabitat(?b, ?env)
+\end{lstlisting}
+
+Regarding the consumption of resources, we have the following equivalence: if Organism $A$ consume Resource $R$ and $A$ is in the Habitat $H$, then $R$ can be found in $H$. In addition, if Resource $R$ can be found in the Habitat $H$ and Organism $A$ consumes this resource, then $A$ lives in $H$. This can be described using SWRL by the following 2 statements:
+\\
+
+\begin{lstlisting}
+consumeTheResource(?a, ?r), foundInTheHabitat(?a, ?h) -> isInTheHabitat(?r, ?h)
+\end{lstlisting}
+
+\begin{lstlisting}
+consumeTheResource(?a, ?r), isInTheHabitat(?r, ?h) -> foundInTheHabitat(?a, ?h)
 \end{lstlisting}
 
 
@@ -124,48 +146,34 @@ The same way, if Organism $a$ coexists with Organism $b$, and $a$ live in the Ha
 \\
 
 \begin{lstlisting}
-coexistWith(?a, ?b) ^ liveIn(?a, ?env) -> liveIn(?b, ?env)
+coexistWith(?a, ?b) ^ foundInHabitat(?a, ?env) -> foundInHabitat(?b, ?env)
 \end{lstlisting}
 
-Now, regarding the plants, we can infer that a plant is an angiosperm if it has a fruit, which is a binary variable. Therefore, we have the following rule:
-\\
+
+From now on, we will focus on discussing the coexistence relationship, which is the most complex relation of the ontology. As previously described, according to our rules, a carnivorous animal will always coexist with another carnivorous animal as long as they inhabit the same environment and they share the relation isNotEatenBy. Additionally, we add the rule that animal $a$ must be different from $b$, as we do not want the relation to be reflexive:
+
 
 \begin{lstlisting}
-has_Fruits(?a, true) -> Angiosperms(?a)
-\end{lstlisting}
-
-From now on, we will focus on discussing the coexistence relationship, which is the most complex relation of the ontology. As previously described, according to our rules, a carnivorous animal will always coexist with another carnivorous animal as long as they inhabit the same environment. Additionally, we add the rule that animal $a$ must be different from $b$, as we do not want the relation to be reflexive. To ensure that they are both different, we require that their scientific names be different, using the syntax \textit{differentFrom}.
-\\
-
-\begin{lstlisting}
-Carnivore(?a) ^ Carnivore(?b) ^ liveIn(?a, ?env) ^ liveIn(?b, ?env) ^ scientific_name(?a, ?name_a) ^ scientific_name(?b, ?name_b) ^ differentFrom(?name_a, ?name_b) -> coexistWith(?a, ?b)
+Carnivore(?a), Carnivore(?b),  DifferentFrom (?a, ?b), foundInTheHabitat(?a, ?h), foundInTheHabitat(?b, ?h), isNotEatenBy(?a, ?b), isNotEatenBy(?b, ?a) -> coexistWith(?a, ?b)
 \end{lstlisting}
 
 We use the same logic to describe the coexistence for the herbivores, as follows:
 \\
 
 \begin{lstlisting}
-Herbivore(?a) ^ Herbivore(?b) ^ liveIn(?a, ?env) ^ liveIn(?b, ?env) ^ scientific_name(?a, ?name_a) ^ scientific_name(?b, ?name_b) ^ differentFrom(?name_a, ?name_b) -> coexistWith(?a, ?b)
-\end{lstlisting}
-
-Also, carnivorous animals will always coexist with the plants that inhabit the same environment. In this case, it's enough to add the proposition \textit{differentFrom(?a, ?b)} because if $a$ is a Carnivore (by the previous proposition) and $b$ is a Plant (also stated earlier), they should be different because both classes are disjoint.
-\\
-
-\begin{lstlisting}
-Carnivore(?a) ^ Plant(?b) ^ liveIn(?a, ?env) ^ liveIn(?b, ?env) ^ differentFrom(?a, ?b) -> coexistWith(?a, ?b)
+Herbivore(?a), Herbivore(?b),  DifferentFrom (?a, ?b), foundInTheHabitat(?a, ?h), foundInTheHabitat(?b, ?h) -> coexistWith(?a, ?b)
 \end{lstlisting}
 
 Next, we have the case of coexistence between plants, which is similar to the herbivore's case:
 \\
 
-
 \begin{lstlisting}
-Plant(?a) ^ Plant(?b) ^ liveIn(?a, ?env) ^ liveIn(?b, ?env) ^ scientific_name(?a, ?name_a) ^ scientific_name(?b, ?name_b) ^ differentFrom(?name_a, ?name_b) -> coexistWith(?a, ?b)
+Plant(?a), Plant(?b),  DifferentFrom (?a, ?b), foundInTheHabitat(?a, ?h), foundInTheHabitat(?b, ?h) -> coexistWith(?a, ?b)
 \end{lstlisting}
 
-Finally, the coexistence between two microorganism happens when they both live in the same environment \textbf{and} do not consume the same resource. To guarantee that both resources are different, we use again their unique identifier, which is the \textit{chemical\_formula}:
+Finally, the coexistence between two microorganism happens when they both live in the same environment \textbf{and} do not consume the same resource: 
 \\
 
 \begin{lstlisting}
-Microorganism(?a) ^ Microorganism(?b) ^ consumeTheResource(?a, ?res_a) ^ consumeTheResource(?b, ?res_b) ^ liveIn(?a, ?env) ^ liveIn(?b, ?env) ^chemical_formula(?res_a, ?formula_a) ^ chemical_formula(?res_b, ?formula_b) ^ differentFrom(?formula_a, ?formula_b) ^ scientific_name(?a, ?name_a) ^ scientific_name(?b, ?name_b) ^ differentFrom(?name_a, ?name_b) -> coexistWith(?a, ?b)
+Microorganism(?a), Microorganism(?b),  DifferentFrom (?a, ?b), foundInTheHabitat(?a, ?h), foundInTheHabitat(?b, ?h), consumeTheResource(?a, ?r), consumeTheResource(?b, ?s),  DifferentFrom (?r, ?s) -> coexistWith(?a, ?b)
 \end{lstlisting}
