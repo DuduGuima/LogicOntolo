@@ -216,3 +216,78 @@ Human's and Lion's inferences can be found in \autoref{fig:humanlion_inf}. First
     \caption{Inference showcase for Human and Lion individuals of the Animal subclass.}
     \label{fig:humanlion_inf}
 \end{figure}
+
+
+\subsection{DL Queries}
+
+
+\begin{figure}[H] % H forces the figure to stay here
+  \centering
+  \includegraphics[width=0.4\textwidth]{DL queries images/2-eau.png}
+  \caption{Query 1}
+  \label{fig:query1}
+\end{figure}
+\textit{Explanation:} This query is a simple example of inference, it translates to "What does the Lion consume ?". In the World generated, the only answer is Water.
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.4\textwidth]{DL queries images/5-has fruit.png}
+  \caption{Query 2 - Data Property}
+  \label{fig:query2}
+\end{figure}
+
+\textit{Explanation:} Pretty straight forward Query once again, making use of the "has\_fruits" Data Property which applies to plant with a boolean range.
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.4\textwidth]{DL queries images/7-weight.png}
+  \caption{Query 3 - Data property}
+  \label{fig:query3}
+\end{figure}
+\textit{Explanation:} Here we filter on another Data Property "weight", we combine this filter with a filter on the Herbivore Class.
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.4\textwidth]{DL queries images/6-iseatenby.png}
+  \caption{Query 4: Is Eaten By Property}
+  \label{fig:query5}
+\end{figure}
+\textit{Explanation:} Simple inference of the `isEatenBy` property.
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.4\textwidth]{DL queries images/8-mangé par qlqn qui mange tel fruit .png}
+  \caption{Query 5: Eaten by Entities Eating Specific Fruits}
+  \label{fig:query4}
+\end{figure}
+\textit{Explanation:} This query returns the individuals eaten by another individuals that eat a specific type of fruit (here apple). It tests the ontology’s ability to handle nested relational logic. \\ It returns the trivial answer "Apple" (it is obvious that "Apple" is eaten by individuals that eat "Apple"), but also Cow (Cow is eaten by Human, and human eat Apple) and Grass (Grass is eaten by Zebra and Zebra eat apple)
+
+
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.5\textwidth]{DL queries images/1-coexistance double.png}
+  \caption{Query 6: Double Coexistence Query}
+  \label{fig:query6}
+\end{figure}
+
+\textit{Explanation:} This query return individuals that can coexist with both Cow and Lion. It tests the ontology’s ability to manage multi-entity relationships.
+
+\begin{figure}[H]
+  \centering
+      \includegraphics[width=0.7\textwidth]{DL queries images/4-query dure .png}
+      \caption{Query 7 Part 1: Complex Query}
+      \label{fig:query7b}
+\end{figure}
+
+\textit{Explanation:} This query finds resources consumed by individuals that "coexist with Lion" and "eat Apple." It shows how the ontology can handle relationships involving coexistence and specific eating behaviors.
+
+\begin{figure}[H]
+  \centering
+      \includegraphics[width=1\textwidth]{DL queries images/3-explication query dure.png}
+      \caption{Query 7 Part 1: Complex Query Explanation}
+      \label{fig:query7a}
+\end{figure}
+
+
+\textit{Explanation:} Above is the detail of the inference of "Oxygen" as an output of the previous query. Lines 5) through 7) infer that Lion and Human coexists. Line 8) infers that Human consumes "Oxygen", and line 12) proves that Human eats "apple", hence it meets all the requirements to be outputted as a query result.
